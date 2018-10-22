@@ -9,18 +9,6 @@ namespace Readify.Controllers
     {
         public Response Get(string sentence)
         {
-            //if (string.IsNullOrWhiteSpace(sentence))
-            //{
-            //    return HelperMethods.GetResponse(Status.Failure,
-            //        ResponseCode.Ok,
-            //        "Your input is not valid. Please give a valid sentense with valid letters.",
-            //        new Result
-            //        {
-            //            Input = $"{sentence}",
-            //            Output = null
-            //        }
-            //        );
-            //}
             try
             {
                 var result = GetReverseWords(sentence);
