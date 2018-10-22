@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Web.Http;
 
 namespace WebApplication5
@@ -19,6 +17,8 @@ namespace WebApplication5
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+
+            Constants.FibonacciList = new List<long> {0, 1};
         }
     }
 }

@@ -1,61 +1,52 @@
-﻿using System;
+﻿using System.Net;
+using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Description;
+using WebApplication5;
 
 namespace Readify.Controllers
 {
     public class FibonacciController : ApiController
     {
-        public Response Get(string n)
+        [ResponseType(typeof(long))]
+        public HttpResponseMessage Get(HttpRequestMessage request, long n)
         {
-            try
-            {
-                var input = long.Parse(n);
-                
-                var result = GetNthFibonacci(input);
-                return HelperMethods.GetResponse(Status.Success, ResponseCode.Ok,
-                    $"The {n}th fibonacci number is {result}.",
-                    new Result
-                    {
-                        Input = $"{n}",
-                        Output = $"{result}"
-                    }
-                    );
-            }
-            catch (Exception)
-            {
-                return HelperMethods.GetResponse(Status.Failure,
-                    ResponseCode.BadReq,
-                    "The request is invalid.",
-                    new Result
-                    {
-                        Input = $"{n}",
-                        Output = null
-                    }
-                    );
-            }
+            var result = GetNthFibonacci(n);
+
+            return result < 0 ? 
+                new HttpResponseMessage(HttpStatusCode.BadRequest) : 
+                request.CreateResponse(HttpStatusCode.OK, result);
         }
 
-        private static int GetNthFibonacci(long n)
+        private static long GetNthFibonacci(long n)
         {
             if (n < 0)
             {
-                n = -1*n;
+                n = -1 * n;
             }
 
-            var firstSeq = 0;
-            var secondSeq = 1;
+            if (n < Constants.FibonacciList.Count)
+            {
+                return Constants.FibonacciList[unchecked((int)n)];
+            }
 
-            for (var i = 0; i < n; i++)
+            var firstSeq = Constants.FibonacciList[unchecked((Constants.FibonacciList.Count - 2))];
+            var secondSeq = Constants.FibonacciList[unchecked((Constants.FibonacciList.Count - 1))];
+
+            for (var i = Constants.FibonacciList.Count - 1; i < n; i++)
             {
                 var temp = firstSeq;
                 firstSeq = secondSeq;
                 secondSeq = temp + secondSeq;
+                if (secondSeq < 0)
+                {
+                    return secondSeq;
+                }
+
+                Constants.FibonacciList.Add(secondSeq);
             }
 
-            if(firstSeq < 0)
-                throw new Exception();
-
-            return firstSeq;
+            return Constants.FibonacciList[unchecked((int)n)];
         }
     }
 }

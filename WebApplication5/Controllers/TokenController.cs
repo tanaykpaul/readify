@@ -1,20 +1,18 @@
-﻿using System.Web.Http;
+﻿using System;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http;
+using System.Web.Http.Description;
+using WebApplication5;
 
 namespace Readify.Controllers
 {
     public class TokenController : ApiController
     {
-        public Response Get()
+        [ResponseType(typeof(Guid))]
+        public HttpResponseMessage Get(HttpRequestMessage request)
         {
-            const string result = "b8e5cbe3-1dfa-427e-af22-99249b767e5b";
-            return HelperMethods.GetResponse(Status.Success, ResponseCode.Ok,
-                $"My Token is {result}",
-                new Result
-                {
-                    Input = null,
-                    Output = $"{result}"
-                }
-                );
+            return request.CreateResponse(HttpStatusCode.OK, new Guid(Constants.CandidateId));
         }
     }
 }

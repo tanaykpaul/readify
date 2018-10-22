@@ -1,60 +1,49 @@
 ﻿using System;
 using System.Linq;
-using System.Text.RegularExpressions;
+using System.Net;
+using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace Readify.Controllers
 {
     public class ReverseWordsController : ApiController
     {
-        public Response Get(string sentence)
+        [ResponseType(typeof(string))]
+        public HttpResponseMessage Get(HttpRequestMessage request, string sentence)
         {
-            try
-            {
-                var result = GetReverseWords(sentence);
-                return HelperMethods.GetResponse(Status.Success, ResponseCode.Ok,
-                    $"Reverse the letters of each word of {sentence} is: {result}.",
-                    new Result
-                    {
-                        Input = $"{sentence}",
-                        Output = $"{result}"
-                    }
-                    );
-            }
-            catch (Exception)
-            {
-                return HelperMethods.GetResponse(Status.Failure,
-                    ResponseCode.BadReq,
-                    $"Sorry, your input {sentence} might have any unknown characters!",
-                    new Result
-                    {
-                        Input = $"{sentence}",
-                        Output = null
-                    }
-                    );
-            }
+            return request.CreateResponse(HttpStatusCode.OK, GetReverseWords(sentence));
         }
+
+        //private static string GetReverseWords(string sentense)
+        //{
+        //    var output = string.Empty;
+        //    if (string.IsNullOrWhiteSpace(sentense)) return sentense;
+
+        //    const string pattern = @"\w(?<!\d)[\w'-]*";
+        //    var matches = new Regex(pattern).Matches(sentense);
+
+        //    var lastPosition = 0;
+        //    foreach (var matchObj in matches.Cast<Match>())
+        //    {
+        //        output = $"{output}{sentense.Substring(lastPosition, matchObj.Index - lastPosition)}{Reverse(matchObj.Value)}";
+        //        lastPosition = matchObj.Index + matchObj.Length;
+        //    }
+        //    if (lastPosition < sentense.Length)
+        //    {
+        //        output = $"{output}{sentense.Substring(lastPosition)}";
+        //    }
+
+        //    return output;
+        //}
 
         private static string GetReverseWords(string sentense)
         {
-            var output = string.Empty;
-            if (string.IsNullOrWhiteSpace(sentense)) return sentense;
+            var items = sentense.Split(' ');
+            var distinctItems = items.Distinct();
+            sentense = distinctItems.Aggregate(sentense, (current, distinctItem) => current.Replace(distinctItem, Reverse(distinctItem)));
 
-            const string pattern = @"\w(?<!\d)[\w'-]*";
-            var matches = new Regex(pattern).Matches(sentense);
-
-            var lastPosition = 0;
-            foreach (var matchObj in matches.Cast<Match>())
-            {
-                output = $"{output}{sentense.Substring(lastPosition, matchObj.Index - lastPosition)}{Reverse(matchObj.Value)}";
-                lastPosition = matchObj.Index + matchObj.Length;
-            }
-            if (lastPosition < sentense.Length)
-            {
-                output = $"{output}{sentense.Substring(lastPosition)}";
-            }
-
-            return output;
+            return sentense;
         }
 
         private static string Reverse(string s)

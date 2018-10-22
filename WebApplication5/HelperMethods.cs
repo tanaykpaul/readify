@@ -7,13 +7,11 @@ namespace Readify
 {
     public static class HelperMethods
     {
-        public static Response GetResponse(Status status, ResponseCode code, string message, Result result)
+        public static Response GetResponse(ResponseCode code, Result result)
         {
             return new Response
             {
                 Code = code,
-                Status = status.GetDescription(),
-                Message = message,
                 Result = result
             };
         }

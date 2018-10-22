@@ -1,51 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace Readify.Controllers
 {
     public class TriangleTypeController : ApiController
     {
-        public Response Get(string a, string b, string c)
+        [ResponseType(typeof (string))]
+        public HttpResponseMessage Get(HttpRequestMessage request, string a, string b, string c)
         {
-            try
+            if (int.Parse(a) <= 0 || int.Parse(b) <= 0 || int.Parse(c) <= 0)
             {
-                if (int.Parse(a) <= 0 || int.Parse(b) <= 0 || int.Parse(c) <= 0)
-                {
-                    return HelperMethods.GetResponse(Status.Failure,
-                        ResponseCode.Ok,
-                        $"Your inputs are not valid. Please give all positive integers.",
-                        new Result
-                        {
-                            Input = $"{a}, {b}, {c}",
-                            Output = "Error"
-                        }
-                        );
-                }
-            
-                var result = GetTriangleType(int.Parse(a), int.Parse(b), int.Parse(c));
-                return HelperMethods.GetResponse(Status.Success, ResponseCode.Ok,
-                    $"Side values - {a}, {b}, {c} suggest it is a {result}.",
-                    new Result
-                    {
-                        Input = $"{a}, {b}, {c}",
-                        Output = $"{result}"
-                    }
-                    );
+                return request.CreateResponse(HttpStatusCode.OK, "Error");
             }
-            catch (Exception)
-            {
-                return HelperMethods.GetResponse(Status.Failure,
-                    ResponseCode.BadReq,
-                    $"The request is invalid.",
-                    new Result
-                    {
-                        Input = $"{a}, {b}, {c}",
-                        Output = null
-                    }
-                    );
-            }
+
+            var result = GetTriangleType(int.Parse(a), int.Parse(b), int.Parse(c));
+            return request.CreateResponse(HttpStatusCode.OK, result);
         }
 
         private static string GetTriangleType(int a, int b, int c)
