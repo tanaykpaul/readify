@@ -11,7 +11,7 @@ namespace Readify.Controllers
                 $"My Token is {result}",
                 new Result
                 {
-                    Input = null,
+                    Input = "",
                     Output = $"{result}"
                 }
                 );
