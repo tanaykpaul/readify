@@ -8,7 +8,7 @@ namespace Readify.Controllers
         {
             const string result = "b8e5cbe3-1dfa-427e-af22-99249b767e5b";
             return HelperMethods.GetResponse(Status.Success, ResponseCode.Ok,
-                $"My Token is {result}.",
+                $"My Token is {result}",
                 new Result
                 {
                     Input = null,
