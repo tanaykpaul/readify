@@ -15,6 +15,9 @@ namespace Readify.Controllers
             return request.CreateResponse(HttpStatusCode.OK, GetReverseWords(sentence));
         }
 
+        // Regex Option was working but taking extra time
+        // That's why it was removed
+
         private static string GetReverseWords(string sentense)
         {
             var items = sentense.Split(' ');
